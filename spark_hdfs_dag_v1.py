@@ -29,7 +29,7 @@ default_args = {
 
 # Define the DAG
 with DAG(
-    'spark_hdfs_cluster_test_dag',
+    'spark_hdfs_cluster_test_dag_v1',
     default_args = default_args,
     schedule_interval = None,  # Set to None or any cron schedule
     catchup = False
