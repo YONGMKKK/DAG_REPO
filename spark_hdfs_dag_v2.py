@@ -7,7 +7,8 @@ from airflow.sensors.time_delta import TimeDeltaSensor
 from datetime import timedelta
 import os
 
-working_folder = '/home/yong/sdg_tests/terraform_k8s_tests/4_spark_hdfs/'
+working_folder = '/tmp/all_test_files/'
+local_configmap_yaml_path = working_folder + 'configmap_hdfs.yaml'
 local_k8s_yaml_path = working_folder + 'sparkhdfs.yaml'
 spark_files_folder = working_folder + 'all_test_files'
 hdfs_data_folder = working_folder + 'all_test_files' + '/test_data'
@@ -34,6 +35,14 @@ with DAG(
     schedule_interval = None,  # Set to None or any cron schedule
     catchup = False
 ) as dag:
+    
+    # Task 1: Start the Spark and HDFS clusters
+    apply_configmap_cmd = 'kubectl apply -f {}'.format(local_configmap_yaml_path)
+    apply_configmap = BashOperator(
+        task_id = 'apply_configmap',
+        bash_command = apply_configmap_cmd,
+        dag = dag
+    )
 
     # Task 1: Start the Spark and HDFS clusters
     start_cluster_cmd = 'kubectl apply -f {}'.format(local_k8s_yaml_path)
